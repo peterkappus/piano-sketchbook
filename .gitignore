@@ -1,0 +1,5 @@
+secrets.env
+.DS*
+*.midi
+*.mp3
+*.flac

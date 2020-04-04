@@ -1,0 +1,3 @@
+Obsolete...
+Keeping this to show the very early index builder I used.
+This has since been replaced with a JSON file and static HTML/JS.

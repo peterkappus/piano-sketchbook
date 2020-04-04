@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Piano Improv Sketchbook by Peter Kappus</title>
+        <meta name="description" content="A collection of short piano improvisations by Peter Kappus. Recorded live with no pre-meditation or post-production.">
+        <meta name="nosnippets">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+        <!--link rel="shortcut icon" href="img/icons/favicontrans.png"-->
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    </head>
+    <body>
+      <div class="container">
+        <h1>Piano Improv Sketchbook by Peter Kappus</h1>
+        <div class="playback-controls">
+            <button class="prev glyphicon glyphicon-step-backward hidden"></button>
+            <button class="play glyphicon glyphicon-play"></button>
+            <button class="pause glyphicon glyphicon-pause hidden"></button>
+            <button class="shuffle glyphicon glyphicon-random"></button>
+            <input class="scrubber hidden" id="range-control" type="range" min="1" max="100" value="0">
+            <button class="next glyphicon glyphicon-step-forward"></button>
+            <div class="timecodes">    
+                <div class="playback-time"></div> /
+                <div class="playback-time-remaining"></div>
+            </div>
+<!--            <button class="download glyphicon glyphicon-download"></button>-->
+        </div>
+        <audio controls id="player" class="hidden">
+             <source src="#" type="audio/mpeg" />
+        </audio>
+        <div id="tracks"></div>
+        
+        <script type="text/javascript" src="player.js"></script>
+        
+      </div>  
+    </body>
+</html>
