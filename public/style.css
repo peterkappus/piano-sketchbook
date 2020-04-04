@@ -5,13 +5,20 @@ html body .hidden {
 body {
   overflow-x: hidden;
   width: 100%;  
-  background: #320;
+  background: #3d1106;
   color: #fff;
 }
 
 
+a {
+  text-decoration: none !important;
+}
+
 #tracks{
   font-size:3rem;
+}
+#tracks div {
+  margin-bottom: 0.8rem;
 }
 #tracks a.playing,
 #tracks a:hover {
@@ -69,7 +76,7 @@ body {
     border: none;
     color: white;
 }
-@media only screen and (max-width: 360px) {
+@media only screen and (max-width: 380px) {
   .scrubber {
     max-width: 100px;
   }
@@ -90,7 +97,7 @@ input[type=range] {
   -webkit-appearance: none;
   width: 100%;
   background: none;
-  margin: 2rem 4rem 4rem 0;
+  margin: 2rem 2rem 0rem 0;
 }
 input[type=range]:focus {
   outline: none;

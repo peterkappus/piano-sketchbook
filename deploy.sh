@@ -2,7 +2,7 @@
 source secrets.env
 
 #sync new MP3s & midi to public folder
-rm -r public/media/*.midi public/*.mp3
+rm -r public/media/*.midi public/media/*.mp3
 rsync -a ../all/*.mp3 public/media/
 rsync -a ../all/*.midi public/media/
 
