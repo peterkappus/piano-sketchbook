@@ -8,7 +8,7 @@ var apiData;
         //grab the date
         var date = item.match(/[\d-]+/)[0]; 
                
-        $( "#tracks" ).append( `<div><a href="${item}">${item.replace(/.+\//,'').replace(/.mp3/,'')}</a></div>` );
+        $( "#tracks" ).append( `<div class="col-md-3"><a href="${item}"><div class="track">${item.replace(/.+\//,'').replace(/.mp3/,'')}</div></a></div>` );
         if ( i === 60 ) {
           return false;
         }
@@ -19,40 +19,59 @@ var apiData;
     });
 })();
 
-var audio = document.getElementById("player");
-var CURRENTTRACKINDEX = 0;
-var AUDIOSCRUBBER = document.querySelector('.scrubber');
 
-var ISSEEKING = false; // for when user is scrubbing through track timeline
+// Get the video
+var video = document.getElementById("myVideo");
+
+// Get the button
+var btn = document.getElementById("myBtn");
+
+// Pause and play the video, and change the button text
+function myFunction() {
+  if (video.paused) {
+    video.play();
+    btn.innerHTML = "Pause";
+  } else {
+    video.pause();
+    btn.innerHTML = "Play";
+  }
+}
+
+
+var audio = document.getElementById("player");
+var currentTrackIndex = 0;
+var scrubber = document.querySelector('.scrubber');
+
+var isSeeking = false; // for when user is scrubbing through track timeline
 var TRACKSPLAYED = new Set(); // tracks which have already been played
 
-var SHUFFLE = false;
-var MEDIALISTOL;
-var MEDIALIST = [];
-var MEDIALIST_UNFILTERED;
+var shuffling = false;
+var medialistOL;
+var medialist = [];
+var medialist_UNFILTERED;
 
 function setup() {
 
-  MEDIALISTOL = document.querySelector('#tracks');
-  MEDIALIST_UNFILTERED = document.querySelectorAll('#tracks div a');
+  medialistOL = document.querySelector('#tracks');
+  medialist_UNFILTERED = document.querySelectorAll('#tracks div a');
 
-  for (var i = 0; i < MEDIALIST_UNFILTERED.length; i++) {
-      var href = MEDIALIST_UNFILTERED[i].href;
+  for (var i = 0; i < medialist_UNFILTERED.length; i++) {
+      var href = medialist_UNFILTERED[i].href;
       if (href.includes('.mp3') || href.includes('.ogg') || href.includes('.wav')) {
-          MEDIALIST.push(MEDIALIST_UNFILTERED[i]);
+          medialist.push(medialist_UNFILTERED[i]);
       }
   }
 
 
-  audio.src = MEDIALIST[CURRENTTRACKINDEX].getAttribute('data-src');
-  MEDIALIST.forEach( function(element, index) {
+  audio.src = medialist[currentTrackIndex].getAttribute('data-src');
+  medialist.forEach( function(element, index) {
       element.addEventListener('click', function (event) {
           event.preventDefault();
           var track = getTrack(index);
           audio.src = track['src'];
           audio.play();
-          CURRENTTRACKINDEX = index;
-          TRACKSPLAYED.add(CURRENTTRACKINDEX);
+          currentTrackIndex = index;
+          TRACKSPLAYED.add(currentTrackIndex);
           return true;
       }, true);
   });
@@ -60,17 +79,17 @@ function setup() {
 
 function getTrack (index) {
     return {
-        'src': MEDIALIST[index].getAttribute('href')
+        'src': medialist[index].getAttribute('href')
     }
 }
 function getNextTrack () {
     return {
-        'src': MEDIALIST[CURRENTTRACKINDEX+1].getAttribute('href')
+        'src': medialist[currentTrackIndex+1].getAttribute('href')
     }
 }
 function getPrevTrack () {
     return {
-        'src': MEDIALIST[CURRENTTRACKINDEX-1].getAttribute('href')
+        'src': medialist[currentTrackIndex-1].getAttribute('href')
     }
 }
 
@@ -80,19 +99,19 @@ function playPrevTrack () {
         document.querySelector('#tracks div a.playing').classList.remove('playing');
         audio.src = prevTrack['src'];
         audio.play();
-        CURRENTTRACKINDEX -= 1;
-        TRACKSPLAYED.add(CURRENTTRACKINDEX);
+        currentTrackIndex -= 1;
+        TRACKSPLAYED.add(currentTrackIndex);
     } catch(e) {
         // statements
         console.log('no next/prev track to play', e);
-        MEDIALISTOL.classList.remove('playing');
+        medialistOL.classList.remove('playing');
         try {
             document.querySelector('#tracks div a.playing').classList.remove('playing');
         } catch(e) {}
     }
 }
 function playNextTrack () {
-    if (SHUFFLE) {
+    if (shuffling) {
         playRandomTrack();
         return;
     }
@@ -101,12 +120,12 @@ function playNextTrack () {
         document.querySelector('#tracks div a.playing').classList.remove('playing');
         audio.src = nextTrack['src'];
         audio.play();
-        CURRENTTRACKINDEX += 1;
-        TRACKSPLAYED.add(CURRENTTRACKINDEX);
+        currentTrackIndex += 1;
+        TRACKSPLAYED.add(currentTrackIndex);
     } catch(e) {
         // statements
         console.log('no next/prev track to play', e);
-        MEDIALISTOL.classList.remove('playing');
+        medialistOL.classList.remove('playing');
         try {
             document.querySelector('#tracks div a.playing').classList.remove('playing');
         } catch(e) {}
@@ -116,13 +135,13 @@ function playNextTrack () {
 
 function getRandomTrackIndex () {
     return Math.round(
-        Math.random() * MEDIALIST.length
+        Math.random() * medialist.length
     );
 }
 
 function playRandomTrack () {
     // reset and start over if all tracks have been played.
-    if (TRACKSPLAYED.length == MEDIALIST.length) {
+    if (TRACKSPLAYED.length == medialist.length) {
         TRACKSPLAYED = new Set();
     }
 
@@ -135,14 +154,14 @@ function playRandomTrack () {
     console.log('playing random track');
     audio.src = getTrack(randomTrackIndex)['src'];
     audio.play();
-    CURRENTTRACKINDEX = randomTrackIndex;
-    TRACKSPLAYED.add(CURRENTTRACKINDEX);
+    currentTrackIndex = randomTrackIndex;
+    TRACKSPLAYED.add(currentTrackIndex);
 }
 
 
-function toggleShuffle () {
-    SHUFFLE = (!SHUFFLE);
-    if (SHUFFLE == false) {
+function toggleshuffling () {
+    shuffling = (!shuffling);
+    if (shuffling == false) {
         TRACKSPLAYED = new Set();
     } else {
         if (audio.paused) {
@@ -169,9 +188,9 @@ audio.addEventListener("timeupdate", function() {
     m = m < 10 ? "0"+m : m;
     
     timeleft.innerHTML = (m||"00")+":"+(s||"00");
-    if (ISSEEKING) {return}
+    if (isSeeking) {return}
     if (!duration == 0){
-        AUDIOSCRUBBER.value = timePercent;
+        scrubber.value = timePercent;
     } 
 }, false);
 
@@ -191,20 +210,20 @@ audio.addEventListener("timeupdate", function() {
 }, false);
 
 
-// HANDLE AUDIOSCRUBBER
+// HANDLE scrubber
 function seek(event){
-    if(ISSEEKING){
+    if(isSeeking){
         var rect = event.target.getBoundingClientRect();
         var x = event.clientX - rect.left;
-        if (x < 0) {x=0} else if (x > AUDIOSCRUBBER.offsetWidth) {x=AUDIOSCRUBBER.offsetWidth}
-        var seekto = (x / AUDIOSCRUBBER.offsetWidth);
+        if (x < 0) {x=0} else if (x > scrubber.offsetWidth) {x=scrubber.offsetWidth}
+        var seekto = (x / scrubber.offsetWidth);
         audio.currentTime = audio.duration * seekto;
         console.log(x);
     }
 }
-AUDIOSCRUBBER.addEventListener("mousedown", function(event){ ISSEEKING=true; seek(event); });
-AUDIOSCRUBBER.addEventListener("mousemove", function(event){ seek(event); });
-AUDIOSCRUBBER.addEventListener("mouseup",function(){ ISSEEKING=false; });
+scrubber.addEventListener("mousedown", function(event){ isSeeking=true; seek(event); });
+scrubber.addEventListener("mousemove", function(event){ seek(event); });
+scrubber.addEventListener("mouseup",function(){ isSeeking=false; });
 
 // Play
 audio.addEventListener("play", function() {
@@ -212,11 +231,11 @@ audio.addEventListener("play", function() {
     try {
         document.querySelector('#tracks div a.playing').classList.remove('playing');
     } catch(e) {}
-    MEDIALISTOL.classList.add('playing');
-    MEDIALIST[CURRENTTRACKINDEX].classList.add('playing');
+    medialistOL.classList.add('playing');
+    medialist[currentTrackIndex].classList.add('playing');
     playBtn.classList.add('hidden');
     pauseBtn.classList.remove('hidden');
-    AUDIOSCRUBBER.classList.remove('hidden');
+    scrubber.classList.remove('hidden');
 }, false);
 audio.addEventListener("pause", function() {
     pauseBtn.classList.add('hidden');
@@ -229,7 +248,7 @@ audio.addEventListener("ended", function() {
     pauseBtn.classList.add('hidden');
     playBtn.classList.remove('hidden');
 
-    if (SHUFFLE) {
+    if (shuffling) {
         playRandomTrack();
     } else {
         playNextTrack();
@@ -243,7 +262,7 @@ audio.addEventListener("ended", function() {
 var playBtn = document.querySelector('.playback-controls .play');
 playBtn.addEventListener('click', function (e) {
     if (document.querySelector('#tracks div a.playing') == null) {
-        MEDIALIST[0].click();
+        medialist[0].click();
     }
     audio.play();
 }, true);
@@ -262,14 +281,14 @@ nextBtn.addEventListener('click', function (e) {
 
 
 
-var randomBtn = document.querySelector('.playback-controls .shuffle');
+var randomBtn = document.querySelector('.playback-controls .shuffling');
 randomBtn.addEventListener('click', function (e) {
-    toggleShuffle();
-    console.log(SHUFFLE);
-    if (SHUFFLE) {
-        randomBtn.classList.add('shuffle-on');
+    toggleshuffling();
+    console.log(shuffling);
+    if (shuffling) {
+        randomBtn.classList.add('shuffling-on');
     } else {
-        randomBtn.classList.remove('shuffle-on');
+        randomBtn.classList.remove('shuffling-on');
     }
 }, true);
 

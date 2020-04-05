@@ -7,19 +7,45 @@ body {
   width: 100%;  
   background: #3d1106;
   color: #fff;
+  font-family: 'Open Sans', sans-serif;
 }
 
-
 a {
+  color: #fff !important;
   text-decoration: none !important;
 }
 
+h1, h2, h3{
+  font-family: 'DM Serif Display', serif;
+}
+
 #tracks{
-  font-size:3rem;
+  font-size:1.5rem;
 }
-#tracks div {
-  margin-bottom: 0.8rem;
+
+#tracks div div.track {
+  text-align: center;
+  margin: 1rem 0 0 0;
+  padding: 3rem 2rem 0 2rem;
+  min-height: 10rem;
+  display: block;
+  border-radius: 2rem;
+  background: rgba(20, 37, 33, 0.82);
+  font-size: 1.6rem;
+  border: 1px solid rgba(105, 111, 110, 0.68);
 }
+
+/* Style the video: 100% width and height to cover the entire window */
+#myVideo {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  z-index: -1000;
+  background: rgba(235,209,22,0.5);
+}
+
 #tracks a.playing,
 #tracks a:hover {
   color: #ff4c94 !important;

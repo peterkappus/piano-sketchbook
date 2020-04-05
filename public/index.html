@@ -8,14 +8,22 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
         <!--link rel="shortcut icon" href="img/icons/favicontrans.png"-->
 
+        
+        <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Open+Sans&display=swap" rel="stylesheet">
+        
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="style.css?v=2a">
 
     </head>
     <body>
+      <!--TODO: https://www.w3schools.com/howto/howto_css_fullscreen_video.asp-->
+      <video autoplay muted loop id="myVideo">
+        <source src="cover_videos/coverr-aerial-view-of-rocky-mountains-1585320758193.mp4" type="video/mp4">
+      </video>
+
       <div class="container">
         <h1>Piano Improv Sketchbook by Peter Kappus</h1>
         <div class="playback-controls">
@@ -34,9 +42,10 @@
         <audio controls id="player" class="hidden">
              <source src="#" type="audio/mpeg" />
         </audio>
-        <div id="tracks"></div>
-        
-        <script type="text/javascript" src="player.js"></script>
+        <div class="row">
+          <div id="tracks"></div>
+        </div>
+        <script type="text/javascript" src="player.js?e"></script>
         
       </div>  
     </body>
