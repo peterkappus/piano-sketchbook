@@ -8,7 +8,12 @@ body {
   background: #fff;
   color: #000;
   font-family: 'Raleway', sans-serif;  
+}
 
+.footer  {
+  margin-top: 2rem;
+  border-top: 1px solid #000;
+  padding: 0.5rem 0 2rem;
 }
 
 h1 {
@@ -29,21 +34,20 @@ h1, h2, h3{
   padding: 3rem 2rem 0 2rem;
   min-height: 10rem;
   display: block;
-  border-radius: 2rem;
-  background: rgba(20, 37, 33, 0.82);
   font-size: 1.6rem;
-  border: 1px solid rgba(105, 111, 110, 0.68);
+  background: #efefef;
+  border: 3px solid #fff;
 }
 
 #tracks a {
-  color: #fff !important;
+  color: #232323 !important;
   text-decoration: none !important;
 }
 
-
-#tracks a.playing,
-#tracks a:hover {
-  color: #cfb118 !important;
+#tracks a.playing .track,
+#tracks a:hover .track {
+  border: 3px solid #cfb118 !important;
+  background: #f9f9f9;
 }
 #tracks a:not(.playing) {
     opacity: 0.8;

@@ -7,9 +7,9 @@ var apiData;
       $.each( data, function( i, item ) {
         //grab the date
         var dateTime = item.match(/[\d-]+(T\d{4})?/)[0].replace(/-/g,' ').replace(/T(\d{2})(\d{2})/," @ $1:$2");
-        console.log(item);
-        var name = item.replace(/.+\//,'').replace(/^[\d-T]*/,"").replace(/.mp3/,'');
-          
+        
+        var name = item.replace(/.+\//,'').replace(/^[\d-T]*/,"").replace("-"," ").replace(/.mp3/,'');
+        
         if(name == ""){
           name = dateTime
           dateTime = '';
