@@ -19,8 +19,8 @@ h1, h2, h3{
   font-family: 'DM Serif Display', serif;
 }
 
-#tracks{
-  font-size:1.5rem;
+#tracks .date {
+  font-size: 1rem;
 }
 
 #tracks div div.track {
@@ -48,7 +48,7 @@ h1, h2, h3{
 
 #tracks a.playing,
 #tracks a:hover {
-  color: #ff4c94 !important;
+  color: #cfb118 !important;
 }
 #tracks a:not(.playing) {
     opacity: 0.8;

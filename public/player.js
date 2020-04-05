@@ -6,9 +6,16 @@ var apiData;
       apiData = data;
       $.each( data, function( i, item ) {
         //grab the date
-        var date = item.match(/[\d-]+/)[0]; 
-               
-        $( "#tracks" ).append( `<div class="col-md-3"><a href="${item}"><div class="track">${item.replace(/.+\//,'').replace(/.mp3/,'')}</div></a></div>` );
+        var date = item.match(/[\d-]+/)[0].replace(/-/g,' '); 
+        var name = item.replace(/.+\//,'').replace(/^[\d-]+/,'').replace(/.mp3/,'')
+        if(name.match(/^T\d/) != null){
+          name = name.replace(/^T/,'').replace(/^(\d{2})/,'$1:');
+        }
+        if(name == ""){
+          name = date;
+          date = '';
+        }
+        $( "#tracks" ).append( `<div class="col-md-3"><a href="${item}"><div class="track"><div class="trackName">${name}</div><div class="date">${date}</div></div></a></div>` );
         if ( i === 60 ) {
           return false;
         }
@@ -43,22 +50,22 @@ var currentTrackIndex = 0;
 var scrubber = document.querySelector('.scrubber');
 
 var isSeeking = false; // for when user is scrubbing through track timeline
-var TRACKSPLAYED = new Set(); // tracks which have already been played
+var tracksPlayed = new Set(); // tracks which have already been played
 
 var shuffling = false;
 var medialistOL;
 var medialist = [];
-var medialist_UNFILTERED;
+var mediaListUnfiltered;
 
 function setup() {
 
   medialistOL = document.querySelector('#tracks');
-  medialist_UNFILTERED = document.querySelectorAll('#tracks div a');
+  mediaListUnfiltered = document.querySelectorAll('#tracks div a');
 
-  for (var i = 0; i < medialist_UNFILTERED.length; i++) {
-      var href = medialist_UNFILTERED[i].href;
+  for (var i = 0; i < mediaListUnfiltered.length; i++) {
+      var href = mediaListUnfiltered[i].href;
       if (href.includes('.mp3') || href.includes('.ogg') || href.includes('.wav')) {
-          medialist.push(medialist_UNFILTERED[i]);
+          medialist.push(mediaListUnfiltered[i]);
       }
   }
 
@@ -71,7 +78,7 @@ function setup() {
           audio.src = track['src'];
           audio.play();
           currentTrackIndex = index;
-          TRACKSPLAYED.add(currentTrackIndex);
+          tracksPlayed.add(currentTrackIndex);
           return true;
       }, true);
   });
@@ -100,7 +107,7 @@ function playPrevTrack () {
         audio.src = prevTrack['src'];
         audio.play();
         currentTrackIndex -= 1;
-        TRACKSPLAYED.add(currentTrackIndex);
+        tracksPlayed.add(currentTrackIndex);
     } catch(e) {
         // statements
         console.log('no next/prev track to play', e);
@@ -121,7 +128,7 @@ function playNextTrack () {
         audio.src = nextTrack['src'];
         audio.play();
         currentTrackIndex += 1;
-        TRACKSPLAYED.add(currentTrackIndex);
+        tracksPlayed.add(currentTrackIndex);
     } catch(e) {
         // statements
         console.log('no next/prev track to play', e);
@@ -141,13 +148,13 @@ function getRandomTrackIndex () {
 
 function playRandomTrack () {
     // reset and start over if all tracks have been played.
-    if (TRACKSPLAYED.length == medialist.length) {
-        TRACKSPLAYED = new Set();
+    if (tracksPlayed.length == medialist.length) {
+        tracksPlayed = new Set();
     }
 
     var randomTrackIndex = getRandomTrackIndex();
     console.log(randomTrackIndex);
-    while (TRACKSPLAYED.has(randomTrackIndex)) {
+    while (tracksPlayed.has(randomTrackIndex)) {
         randomTrackIndex = getRandomTrackIndex();
     }
 
@@ -155,14 +162,14 @@ function playRandomTrack () {
     audio.src = getTrack(randomTrackIndex)['src'];
     audio.play();
     currentTrackIndex = randomTrackIndex;
-    TRACKSPLAYED.add(currentTrackIndex);
+    tracksPlayed.add(currentTrackIndex);
 }
 
 
 function toggleshuffling () {
     shuffling = (!shuffling);
     if (shuffling == false) {
-        TRACKSPLAYED = new Set();
+        tracksPlayed = new Set();
     } else {
         if (audio.paused) {
             playRandomTrack();
