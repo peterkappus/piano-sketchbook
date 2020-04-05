@@ -6,16 +6,16 @@ var apiData;
       apiData = data;
       $.each( data, function( i, item ) {
         //grab the date
-        var date = item.match(/[\d-]+/)[0].replace(/-/g,' '); 
-        var name = item.replace(/.+\//,'').replace(/^[\d-]+/,'').replace(/.mp3/,'')
-        if(name.match(/^T\d/) != null){
-          name = name.replace(/^T/,'').replace(/^(\d{2})/,'$1:');
-        }
+        var dateTime = item.match(/[\d-]+(T\d{4})?/)[0].replace(/-/g,' ').replace(/T(\d{2})(\d{2})/," @ $1:$2");
+        console.log(item);
+        var name = item.replace(/.+\//,'').replace(/^[\d-T]*/,"").replace(/.mp3/,'');
+          
         if(name == ""){
-          name = date;
-          date = '';
+          name = dateTime
+          dateTime = '';
         }
-        $( "#tracks" ).append( `<div class="col-md-3"><a href="${item}"><div class="track"><div class="trackName">${name}</div><div class="date">${date}</div></div></a></div>` );
+
+        $( "#tracks" ).append( `<div class="col-md-3"><a href="${item}"><div class="track"><div class="trackName">${titleCase(name)}</div><div class="date">${dateTime}</div></div></a></div>` );
         if ( i === 60 ) {
           return false;
         }
@@ -166,7 +166,7 @@ function playRandomTrack () {
 }
 
 
-function toggleshuffling () {
+function toggleShuffling () {
     shuffling = (!shuffling);
     if (shuffling == false) {
         tracksPlayed = new Set();
@@ -288,14 +288,14 @@ nextBtn.addEventListener('click', function (e) {
 
 
 
-var randomBtn = document.querySelector('.playback-controls .shuffling');
+var randomBtn = document.querySelector('.playback-controls .shuffle');
 randomBtn.addEventListener('click', function (e) {
-    toggleshuffling();
+    toggleShuffling();
     console.log(shuffling);
     if (shuffling) {
-        randomBtn.classList.add('shuffling-on');
+        randomBtn.classList.add('on');
     } else {
-        randomBtn.classList.remove('shuffling-on');
+        randomBtn.classList.remove('on');
     }
 }, true);
 
@@ -311,3 +311,9 @@ $(window).keypress(function(e) {
         return true;
     }
 });
+
+
+
+function titleCase(string) {
+    return string.split(" ").map(function(s){return s.charAt(0).toUpperCase() + s.slice(1)}).join(" ");
+  }

@@ -2,9 +2,8 @@
 source secrets.env
 
 #sync new MP3s & midi to public folder
-rm -r public/media/*.midi public/media/*.mp3
-rsync -a ../all/*.mp3 public/media/
-rsync -a ../all/*.midi public/media/
+# delete anythin which isn't in the source folder
+rsync -a --delete-excluded  --include="*.mp3" --include="*.midi" --exclude="*" ../all/ public/media/
 
 #build index
 ruby mkindex.rb
