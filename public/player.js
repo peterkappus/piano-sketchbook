@@ -114,6 +114,14 @@ function playTrack(index) {
     //no currently playing track
   }
   audio.src = getTrack(currentTrackIndex)['src'];
+
+//google event tracking
+  gtag('event', 'songInteraction', {
+    'event_category': 'user_actions',
+    'event_label': 'play',
+    'value': audio.src
+  });
+
   try {
     audio.play();    
   }catch(e){
@@ -255,15 +263,14 @@ audio.addEventListener("ended", function() {
 
 
 
+
 // Playback
 var playBtn = document.querySelector('.playback-controls .play');
 playBtn.addEventListener('click', function (e) {
     if (document.querySelector('#tracks div a.playing') == null) {
       queuedIndex = 0;
     }
-
     mediaList[queuedIndex].click();
-
     audio.play();
 }, true);
 var pauseBtn = document.querySelector('.playback-controls .pause');
