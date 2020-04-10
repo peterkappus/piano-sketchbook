@@ -231,20 +231,20 @@ audio.addEventListener("play", function() {
       //nothing playing 
     }
     
-    //google event tracking from Angela
+    //google tag manager event tracking from Angela
     dataLayer.push({
       'event': 'player',
       'playerEvent': 'start',
       'playerFile': audio.src
     });
 
-    // legacy GA code
-      gtag('event', 'songInteraction', {
+    // legacy GA code - remove so we don't double-track
+/*      gtag('event', 'songInteraction', {
         'event_category': 'user_actions',
         'event_label': 'play',
         'value': audio.src
       });
-
+*/
 
     mediaList[currentTrackIndex].classList.add('playing');
     playBtn.classList.add('hidden');
