@@ -53,7 +53,6 @@ function setup() {
       }
   }
 
-  audio.src = mediaList[currentTrackIndex].getAttribute('data-src');
   mediaList.forEach( function(element, index) {
       element.addEventListener('click', function (event) {
           event.preventDefault();
@@ -114,13 +113,6 @@ function playTrack(index) {
     //no currently playing track
   }
   audio.src = getTrack(currentTrackIndex)['src'];
-
-//google event tracking
-  gtag('event', 'songInteraction', {
-    'event_category': 'user_actions',
-    'event_label': 'play',
-    'value': audio.src
-  });
 
   try {
     audio.play();    
@@ -239,6 +231,14 @@ audio.addEventListener("play", function() {
       //nothing playing 
     }
     
+    //google event tracking
+      gtag('event', 'songInteraction', {
+        'event_category': 'user_actions',
+        'event_label': 'play',
+        'value': audio.src
+      });
+
+
     mediaList[currentTrackIndex].classList.add('playing');
     playBtn.classList.add('hidden');
     pauseBtn.classList.remove('hidden');
