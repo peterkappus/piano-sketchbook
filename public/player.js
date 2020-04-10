@@ -55,6 +55,16 @@ function setup() {
       element.addEventListener('click', function (event) {
           event.preventDefault();
           var track = getTrack(index);
+          
+          if(index == currentTrackIndex) {
+            if (!audio.paused) {
+                pauseBtn.click();
+            } else {
+                playBtn.click();
+            }
+            return true;
+          }
+          
           audio.src = track['src'];
           audio.play();
           currentTrackIndex = index;
@@ -237,11 +247,9 @@ audio.addEventListener("play", function() {
     });
 
     // legacy GA code - remove so we don't double-track
-    /*      gtag('event', 'songInteraction', {
-            'event_category': 'user_actions',
-            'event_label': 'play',
-            'value': audio.src
-          });
+    /*  gtag('event', audio.src, {
+        'event_category': 'play'
+      });
     */
 
     mediaList[currentTrackIndex].classList.add('playing');
