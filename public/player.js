@@ -16,34 +16,13 @@ var apiData;
         }
 
         $( "#tracks" ).append( `<div class="col-md-3"><a href="${item}"><div class="track"><div class="trackName">${titleCase(name)}</div><div class="date">${dateTime}</div></div></a></div>` );
-        if ( i === 60 ) {
-          return false;
-        }
+        
       });
       
       //now setup player
       setup();
     });
 })();
-
-
-// Get the video
-var video = document.getElementById("myVideo");
-
-// Get the button
-var btn = document.getElementById("myBtn");
-
-// Pause and play the video, and change the button text
-function myFunction() {
-  if (video.paused) {
-    video.play();
-    btn.innerHTML = "Pause";
-  } else {
-    video.pause();
-    btn.innerHTML = "Play";
-  }
-}
-
 
 var audio = document.getElementById("player");
 var currentTrackIndex = 0;
@@ -55,10 +34,10 @@ var tracksPlayed = new Set(); // tracks which have already been played
 var shuffling = false;
 var medialistOL;
 var medialist = [];
+var dict = [];
 var mediaListUnfiltered;
 
 function setup() {
-
   medialistOL = document.querySelector('#tracks');
   mediaListUnfiltered = document.querySelectorAll('#tracks div a');
 
@@ -69,7 +48,6 @@ function setup() {
       }
   }
 
-
   audio.src = medialist[currentTrackIndex].getAttribute('data-src');
   medialist.forEach( function(element, index) {
       element.addEventListener('click', function (event) {
@@ -79,9 +57,34 @@ function setup() {
           audio.play();
           currentTrackIndex = index;
           tracksPlayed.add(currentTrackIndex);
+          setAnchor(track['src'].replace("media/","").replace(".mp3",""));
           return true;
       }, true);
   });
+}
+
+scrubber.addEventListener("mousedown", function(event){ isSeeking=true; seek(event); });
+scrubber.addEventListener("mousemove", function(event){ seek(event); });
+scrubber.addEventListener("mouseup", function(){ isSeeking=false; });
+
+
+function getAnchor(){
+  var match = document.location.href.match(/#(.+)/);
+  
+  if(match != null) {
+    url = "media/" + match[1] + ".mp3";
+    
+    //find it
+    //for(i in medialist)
+    
+  }
+  
+  return null;
+  
+}
+
+function setAnchor(key){
+  document.location.assign(document.location.href.replace(/#.+/,"") + "#" + key);
 }
 
 function getTrack (index) {
@@ -89,46 +92,22 @@ function getTrack (index) {
         'src': medialist[index].getAttribute('href')
     }
 }
-function getNextTrack () {
-    return {
-        'src': medialist[currentTrackIndex+1].getAttribute('href')
-    }
-}
-function getPrevTrack () {
-    return {
-        'src': medialist[currentTrackIndex-1].getAttribute('href')
-    }
+
+function playTrack(index) {
+  currentTrackIndex = index;
+  document.querySelector('#tracks div a.playing').classList.remove('playing');
+  audio.src = getTrack(currentTrackIndex)['src'];
+  audio.play();
+  tracksPlayed.add(currentTrackIndex);
 }
 
-function playPrevTrack () {
-    try {
-        var prevTrack = getPrevTrack();
-        document.querySelector('#tracks div a.playing').classList.remove('playing');
-        audio.src = prevTrack['src'];
-        audio.play();
-        currentTrackIndex -= 1;
-        tracksPlayed.add(currentTrackIndex);
-    } catch(e) {
-        // statements
-        console.log('no next/prev track to play', e);
-        medialistOL.classList.remove('playing');
-        try {
-            document.querySelector('#tracks div a.playing').classList.remove('playing');
-        } catch(e) {}
-    }
-}
 function playNextTrack () {
     if (shuffling) {
         playRandomTrack();
         return;
     }
     try {
-        var nextTrack = getNextTrack();
-        document.querySelector('#tracks div a.playing').classList.remove('playing');
-        audio.src = nextTrack['src'];
-        audio.play();
-        currentTrackIndex += 1;
-        tracksPlayed.add(currentTrackIndex);
+      playTrack(currentTrackIndex+1);            
     } catch(e) {
         // statements
         console.log('no next/prev track to play', e);
@@ -153,12 +132,9 @@ function playRandomTrack () {
     }
 
     var randomTrackIndex = getRandomTrackIndex();
-    console.log(randomTrackIndex);
     while (tracksPlayed.has(randomTrackIndex)) {
         randomTrackIndex = getRandomTrackIndex();
     }
-
-    console.log('playing random track');
     audio.src = getTrack(randomTrackIndex)['src'];
     audio.play();
     currentTrackIndex = randomTrackIndex;
@@ -216,8 +192,6 @@ audio.addEventListener("timeupdate", function() {
     }
 }, false);
 
-
-// HANDLE scrubber
 function seek(event){
     if(isSeeking){
         var rect = event.target.getBoundingClientRect();
@@ -225,16 +199,12 @@ function seek(event){
         if (x < 0) {x=0} else if (x > scrubber.offsetWidth) {x=scrubber.offsetWidth}
         var seekto = (x / scrubber.offsetWidth);
         audio.currentTime = audio.duration * seekto;
-        console.log(x);
     }
 }
-scrubber.addEventListener("mousedown", function(event){ isSeeking=true; seek(event); });
-scrubber.addEventListener("mousemove", function(event){ seek(event); });
-scrubber.addEventListener("mouseup",function(){ isSeeking=false; });
+
 
 // Play
 audio.addEventListener("play", function() {
-    console.log('song played');
     try {
         document.querySelector('#tracks div a.playing').classList.remove('playing');
     } catch(e) {}
@@ -247,7 +217,6 @@ audio.addEventListener("play", function() {
 audio.addEventListener("pause", function() {
     pauseBtn.classList.add('hidden');
     playBtn.classList.remove('hidden');
-    console.log('paused');    
 }, false);
 
 // End
@@ -260,7 +229,6 @@ audio.addEventListener("ended", function() {
     } else {
         playNextTrack();
     }
-    console.log('song ended');
 }, false);
 
 

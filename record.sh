@@ -1,6 +1,6 @@
 #record
 
-threshold="0.001%"
+threshold="0.006%"
 
 echo "Make sure the input is set to your audio interface (not internal microphone).\n\nUNPLUG YOUR POWER SUPPLY WHILE RECORDING :)"
 

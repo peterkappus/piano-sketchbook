@@ -16,8 +16,10 @@ Run `docker run -it --rm -v "$(pwd)":/srv -w="/srv/src/resource" huli/gulp build
 
 
 
-## simple http server
-python -m SimpleHTTPServer 8000
+## Local HTTP Server (supporting range requests)
+`docker run --rm -it -p 8080:80 -v "$(pwd)":/usr/share/nginx/html:ro -d nginx`
+
+We use the above because it supports "range requests" required for seeking. `python -m SimpleHTTPServer 8000` won't support seeking.
 
 
 ```
