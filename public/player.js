@@ -231,7 +231,14 @@ audio.addEventListener("play", function() {
       //nothing playing 
     }
     
-    //google event tracking
+    //google event tracking from Angela
+    dataLayer.push({
+      'event': 'player',
+      'playerEvent': 'start',
+      'playerFile': audio.src
+    });
+
+    // legacy GA code
       gtag('event', 'songInteraction', {
         'event_category': 'user_actions',
         'event_label': 'play',
