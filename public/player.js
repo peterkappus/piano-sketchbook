@@ -21,8 +21,13 @@ var apiData;
       
       //now setup player
       setup();
+      
+      //do we have a bookmark to play?
+      getAnchor();
     });
 })();
+
+var queuedIndex; //track to play next (if bookmark supplied);
 
 var audio = document.getElementById("player");
 var currentTrackIndex = 0;
@@ -32,24 +37,24 @@ var isSeeking = false; // for when user is scrubbing through track timeline
 var tracksPlayed = new Set(); // tracks which have already been played
 
 var shuffling = false;
-var medialistOL;
-var medialist = [];
+var mediaListOL;
+var mediaList = [];
 var dict = [];
 var mediaListUnfiltered;
 
 function setup() {
-  medialistOL = document.querySelector('#tracks');
+  mediaListOL = document.querySelector('#tracks');
   mediaListUnfiltered = document.querySelectorAll('#tracks div a');
 
   for (var i = 0; i < mediaListUnfiltered.length; i++) {
       var href = mediaListUnfiltered[i].href;
       if (href.includes('.mp3') || href.includes('.ogg') || href.includes('.wav')) {
-          medialist.push(mediaListUnfiltered[i]);
+          mediaList.push(mediaListUnfiltered[i]);
       }
   }
 
-  audio.src = medialist[currentTrackIndex].getAttribute('data-src');
-  medialist.forEach( function(element, index) {
+  audio.src = mediaList[currentTrackIndex].getAttribute('data-src');
+  mediaList.forEach( function(element, index) {
       element.addEventListener('click', function (event) {
           event.preventDefault();
           var track = getTrack(index);
@@ -75,7 +80,15 @@ function getAnchor(){
     url = "media/" + match[1] + ".mp3";
     
     //find it
-    //for(i in medialist)
+    for(i in mediaList) {
+      if(mediaList[i].href.replace(/http.+?\/media/,'media') == url) {
+        queuedIndex = i;
+        mediaList[queuedIndex].classList.add('playing');
+        return;
+      }
+    }
+    
+    console.log(`Track ${url} not found`);
     
   }
   
@@ -89,15 +102,23 @@ function setAnchor(key){
 
 function getTrack (index) {
     return {
-        'src': medialist[index].getAttribute('href')
+        'src': mediaList[index].getAttribute('href')
     }
 }
 
 function playTrack(index) {
   currentTrackIndex = index;
-  document.querySelector('#tracks div a.playing').classList.remove('playing');
+  try {
+    document.querySelector('#tracks div a.playing').classList.remove('playing');  
+  }catch(e){
+    //no currently playing track
+  }
   audio.src = getTrack(currentTrackIndex)['src'];
-  audio.play();
+  try {
+    audio.play();    
+  }catch(e){
+    //awaiting interaction to play...
+  }
   tracksPlayed.add(currentTrackIndex);
 }
 
@@ -107,11 +128,11 @@ function playNextTrack () {
         return;
     }
     try {
-      playTrack(currentTrackIndex+1);            
+      playTrack(currentTrackIndex + 1);            
     } catch(e) {
         // statements
         console.log('no next/prev track to play', e);
-        medialistOL.classList.remove('playing');
+        mediaListOL.classList.remove('playing');
         try {
             document.querySelector('#tracks div a.playing').classList.remove('playing');
         } catch(e) {}
@@ -121,13 +142,13 @@ function playNextTrack () {
 
 function getRandomTrackIndex () {
     return Math.round(
-        Math.random() * medialist.length
+        Math.random() * mediaList.length
     );
 }
 
 function playRandomTrack () {
     // reset and start over if all tracks have been played.
-    if (tracksPlayed.length == medialist.length) {
+    if (tracksPlayed.length == mediaList.length) {
         tracksPlayed = new Set();
     }
 
@@ -200,16 +221,17 @@ function seek(event){
         var seekto = (x / scrubber.offsetWidth);
         audio.currentTime = audio.duration * seekto;
     }
-}
-
+} 
 
 // Play
 audio.addEventListener("play", function() {
     try {
         document.querySelector('#tracks div a.playing').classList.remove('playing');
-    } catch(e) {}
-    medialistOL.classList.add('playing');
-    medialist[currentTrackIndex].classList.add('playing');
+    } catch(e) { 
+      //nothing playing 
+    }
+    
+    mediaList[currentTrackIndex].classList.add('playing');
     playBtn.classList.add('hidden');
     pauseBtn.classList.remove('hidden');
     scrubber.classList.remove('hidden');
@@ -237,8 +259,11 @@ audio.addEventListener("ended", function() {
 var playBtn = document.querySelector('.playback-controls .play');
 playBtn.addEventListener('click', function (e) {
     if (document.querySelector('#tracks div a.playing') == null) {
-        medialist[0].click();
+      queuedIndex = 0;
     }
+
+    mediaList[queuedIndex].click();
+
     audio.play();
 }, true);
 var pauseBtn = document.querySelector('.playback-controls .pause');
