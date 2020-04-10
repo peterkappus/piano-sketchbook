@@ -27,8 +27,6 @@ var apiData;
     });
 })();
 
-var queuedIndex; //track to play next (if bookmark supplied);
-
 var audio = document.getElementById("player");
 var currentTrackIndex = 0;
 var scrubber = document.querySelector('.scrubber');
@@ -81,8 +79,8 @@ function getAnchor(){
     //find it
     for(i in mediaList) {
       if(mediaList[i].href.replace(/http.+?\/media/,'media') == url) {
-        queuedIndex = i;
-        mediaList[queuedIndex].classList.add('playing');
+        currentTrackIndex = i;
+        mediaList[currentTrackIndex].classList.add('playing');
         return;
       }
     }
@@ -239,12 +237,12 @@ audio.addEventListener("play", function() {
     });
 
     // legacy GA code - remove so we don't double-track
-/*      gtag('event', 'songInteraction', {
-        'event_category': 'user_actions',
-        'event_label': 'play',
-        'value': audio.src
-      });
-*/
+    /*      gtag('event', 'songInteraction', {
+            'event_category': 'user_actions',
+            'event_label': 'play',
+            'value': audio.src
+          });
+    */
 
     mediaList[currentTrackIndex].classList.add('playing');
     playBtn.classList.add('hidden');
@@ -275,9 +273,9 @@ audio.addEventListener("ended", function() {
 var playBtn = document.querySelector('.playback-controls .play');
 playBtn.addEventListener('click', function (e) {
     if (document.querySelector('#tracks div a.playing') == null) {
-      queuedIndex = 0;
+      currentTrackIndex = 0;
     }
-    mediaList[queuedIndex].click();
+    mediaList[currentTrackIndex].click();
     audio.play();
 }, true);
 var pauseBtn = document.querySelector('.playback-controls .pause');
