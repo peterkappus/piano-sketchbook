@@ -56,15 +56,11 @@ function setup() {
           event.preventDefault();
           var track = getTrack(index);
           
-          if(index == currentTrackIndex) {
-            if (!audio.paused) {
-                pauseBtn.click();
-            } else {
-                playBtn.click();
-            }
-            return true;
+          if(index == currentTrackIndex && !audio.paused) {
+            audio.pause();
+            return;
           }
-          
+        
           audio.src = track['src'];
           audio.play();
           currentTrackIndex = index;
@@ -238,19 +234,12 @@ audio.addEventListener("play", function() {
     } catch(e) { 
       //nothing playing 
     }
-    
-    //google tag manager event tracking from Angela
+  
     dataLayer.push({
-      'event': 'player',
-      'playerEvent': 'start',
-      'playerFile': audio.src
+      'event': 'player-start',
+      'playerEvent': audio.src
     });
-
-    // legacy GA code - remove so we don't double-track
-    /*  gtag('event', audio.src, {
-        'event_category': 'play'
-      });
-    */
+    
 
     mediaList[currentTrackIndex].classList.add('playing');
     playBtn.classList.add('hidden');
