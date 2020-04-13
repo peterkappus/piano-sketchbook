@@ -65,7 +65,6 @@ function setup() {
           audio.play();
           currentTrackIndex = index;
           tracksPlayed.add(currentTrackIndex);
-          setAnchor(track['src'].replace("media/","").replace(".mp3",""));
           return true;
       }, true);
   });
@@ -178,45 +177,6 @@ function toggleShuffling () {
     }
 }
 
-
-// Countdown
-audio.addEventListener("timeupdate", function() {
-    var timeleft = document.querySelector('.playback-time-remaining'),
-        duration = parseInt( audio.duration ),
-        currentTime = parseInt( audio.currentTime ),
-        timeLeft = duration - currentTime,
-        s, m;
-
-    var timePercent = parseInt((currentTime / duration) * 100);
-    
-    s = timeLeft % 60;
-    m = Math.floor( timeLeft / 60 ) % 60;
-    
-    s = s < 10 ? "0"+s : s;
-    m = m < 10 ? "0"+m : m;
-    
-    timeleft.innerHTML = (m||"00")+":"+(s||"00");
-    if (isSeeking) {return}
-    if (!duration == 0){
-        scrubber.value = timePercent;
-    } 
-}, false);
-
-// Countup
-audio.addEventListener("timeupdate", function() {
-    var timeline = document.querySelector('.playback-time');
-    var s = parseInt(audio.currentTime % 60);
-    var m = parseInt((audio.currentTime / 60) % 60);
-    m = m < 10 ? "0"+m : m;
-
-    if (s < 10) {
-        timeline.innerHTML = m + ':0' + s;
-    }
-    else {
-        timeline.innerHTML = m + ':' + s;
-    }
-}, false);
-
 function seek(event){
     if(isSeeking){
         var rect = event.target.getBoundingClientRect();
@@ -240,6 +200,9 @@ audio.addEventListener("play", function() {
       'playerEvent': audio.src
     });
     
+    //set anchor for bookmarking
+    setAnchor(audio.src.replace(/http.*media\//,"").replace(".mp3",""));
+
 
     mediaList[currentTrackIndex].classList.add('playing');
     playBtn.classList.add('hidden');
@@ -313,7 +276,6 @@ $(window).keypress(function(e) {
         return true;
     }
 });
-
 
 
 function titleCase(string) {
