@@ -3,7 +3,7 @@
 # See: https://gist.github.com/peterkappus/c1b8dfc621077c42019d21cf6f9ab624
 
 
-threshold="0.0008%"
+threshold="0.005%"
 
 echo "Make sure the input is set to your audio interface (not internal microphone).\n\nUNPLUG YOUR POWER SUPPLY WHILE RECORDING :)"
 

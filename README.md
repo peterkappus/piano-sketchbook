@@ -19,7 +19,7 @@ Record audio, compress to Flac & MP3 files, create an index.html with a link to 
 If you change the filenames, run `./build.sh` to re-copy and generate the JSON. If you're doing this regularly, you might want to `watch -n 20 ./build.sh` in another terminal window to do it every 20 seconds.
 
 ### Local HTTP Server (supporting range requests)
-Run `docker run --rm -it -p 8080:80 -v "$(pwd)":/usr/share/nginx/html:ro -d nginx`
+Run `docker run --rm -it -p 8080:80 -v "$(pwd)/public":/usr/share/nginx/html:ro -d nginx`
 We use the above because it supports "range requests" required for seeking. `python -m SimpleHTTPServer 8000` won't support seeking.
 
 

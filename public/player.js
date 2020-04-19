@@ -228,6 +228,20 @@ audio.addEventListener("ended", function() {
 
 
 
+// Countdown
+audio.addEventListener("timeupdate", function() {
+    var duration = parseInt( audio.duration ),
+        currentTime = parseInt( audio.currentTime ),
+        timeLeft = duration - currentTime;
+
+    var timePercent = parseInt((currentTime / duration) * 100);
+
+    if (isSeeking) {return}
+    if (!duration == 0){
+        scrubber.value = timePercent;
+    }
+}, false);
+
 
 // Playback
 var playBtn = document.querySelector('.playback-controls .play');
