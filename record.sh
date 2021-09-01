@@ -3,12 +3,13 @@
 # See: https://gist.github.com/peterkappus/c1b8dfc621077c42019d21cf6f9ab624
 
 
-threshold="0.005%"
+threshold="0.5%"
+#threshold="0.005%"
 
 echo "Make sure the input is set to your audio interface (not internal microphone).\n\nUNPLUG YOUR POWER SUPPLY WHILE RECORDING :)"
 
 ##open this page to record midi simultaneously:
-open -na "Google Chrome" --args --incognito "https://midi-recorder.web.app/"
+#open -na "Google Chrome" --args --incognito "https://midi-recorder.web.app/"
 
 #file="../all/"$(date +%Y-%m-%dT%H%M%S%Z) 
 file="../all/"$(date +%Y-%m-%dT%H%M) 
